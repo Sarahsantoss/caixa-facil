@@ -149,7 +149,12 @@ supabase: Client = conectar_banco()
 # =========================================================
 # 5. SEGURANÇA E ACESSO
 # =========================================================
-SENHA_CAIXA = "1234"
+# Busca a senha exclusivamente das configurações seguras (Secrets)
+try:
+    SENHA_CAIXA = st.secrets["SENHA_CAIXA"]
+except Exception:
+    st.error("⚠️ Erro de segurança: Chave 'SENHA_CAIXA' não encontrada nos Secrets do Streamlit.")
+    st.stop()
 
 if "autenticado" not in st.session_state:
     st.session_state.autenticado = False
@@ -169,21 +174,6 @@ if not st.session_state.autenticado:
 if st.sidebar.button("🔒 Sair / Bloquear App"):
     st.session_state.autenticado = False
     st.rerun()
-
-# =========================================================
-# 6. GERENCIAMENTO DE NAVEGAÇÃO
-# =========================================================
-OPCOES_NAVEGACAO = [
-    "➕ Novo", 
-    "📋 Lista", 
-    "📊 Fechamento", 
-    "📅 Mensal"
-]
-
-if "tela_ativa" not in st.session_state:
-    st.session_state.tela_ativa = "➕ Novo"
-
-tela = st.session_state.tela_ativa
 
 # =========================================================
 # TELA 1: NOVO LANÇAMENTO
