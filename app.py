@@ -18,8 +18,8 @@ except Exception:
 # =========================================================
 st.set_page_config(
     page_title="Caixa Fácil",
-    page_icon=icone_app,
-    layout="centered",
+    page_icon="https://raw.githubusercontent.com/Sarahsantoss/caixa-facil/main/icon.png",
+    layout="wide",
     initial_sidebar_state="collapsed"
 )
 
