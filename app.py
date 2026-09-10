@@ -3,29 +3,74 @@ import pandas as pd
 import calendar
 from datetime import date
 from supabase import create_client, Client
+from PIL import Image
 
 # =========================================================
-# 1. CONFIGURAÇÃO DA PÁGINA E ESTILO OTIMIZADO PARA CELULAR
+# 1. CARREGAR ÍCONE DO APLICATIVO
 # =========================================================
-st.set_page_config(page_title="Caixa Fácil", layout="centered", initial_sidebar_state="collapsed")
+try:
+    icone_app = Image.open("icon.png")
+except Exception:
+    icone_app = "📱"
 
-# Estilo CSS para transformar o site em um App de Banco nativo no celular
+# =========================================================
+# 2. CONFIGURAÇÃO DA PÁGINA E NOME DO APP
+# =========================================================
+st.set_page_config(
+    page_title="Caixa Fácil",
+    page_icon=icone_app,
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
+
+# =========================================================
+# 3. CABEÇALHO FIXO, PWA E ESTILO CSS OTIMIZADO PARA CELULAR
+# =========================================================
 st.markdown("""
+    <head>
+        <title>Caixa Fácil</title>
+        <meta name="apple-mobile-web-app-title" content="Caixa Fácil">
+        <meta name="application-name" content="Caixa Fácil">
+        <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/SEU-USUARIO/caixa-facil/main/icon.png">
+        <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/SEU-USUARIO/caixa-facil/main/icon.png">
+    </head>
+    
+    <!-- CABEÇALHO FIXO NO TOPO DA TELA -->
+    <div style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 50px;
+        background-color: #ffffff;
+        border-bottom: 2px solid #e2e8f0;
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 19px;
+        color: #0284c7;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.05);
+    ">
+        📱 Caixa Fácil
+    </div>
+
     <style>
-    /* Esconde cabeçalhos, rodapé padrão e menu do Streamlit */
+    /* Esconde elementos nativos do Streamlit */
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* Fontes maiores e fácil leitura na tela do celular */
+    /* Fontes adaptadas para smartphone */
     html, body, [class*="css"], .stMarkdown, p, label {
-        font-size: 18px !important;
+        font-size: 17px !important;
     }
 
-    /* Espaçamento no fundo para o conteúdo não ser coberto pela barra inferior */
+    /* Margens superior e inferior garantem que nenhum conteúdo ou botão seja coberto */
     .main .block-container {
-        padding-top: 15px !important;
-        padding-bottom: 120px !important;
+        padding-top: 65px !important;    /* Garante espaço abaixo do cabeçalho */
+        padding-bottom: 110px !important; /* Garante espaço acima da barra inferior */
         padding-left: 15px !important;
         padding-right: 15px !important;
     }
@@ -34,12 +79,12 @@ st.markdown("""
     div.stButton > button {
         width: 100% !important;
         height: 3.4em !important;
-        font-size: 18px !important;
+        font-size: 17px !important;
         font-weight: bold !important;
         border-radius: 12px !important;
     }
 
-    /* BARRA FIXA NO RODAPÉ DA TELA DO CELULAR (ESTILO BANCO) */
+    /* BARRA FIXA DE NAVEGAÇÃO NO RODAPÉ */
     div[data-testid="stBottomBlockContainer"] {
         position: fixed !important;
         bottom: 0 !important;
@@ -47,12 +92,12 @@ st.markdown("""
         right: 0 !important;
         background-color: #ffffff !important;
         border-top: 2px solid #e2e8f0 !important;
-        padding: 8px 6px 22px 6px !important; /* Espaço inferior para gestos do iPhone/Android */
-        z-index: 999999 !important;
+        padding: 8px 6px 20px 6px !important;
+        z-index: 99999 !important;
         box-shadow: 0px -4px 12px rgba(0, 0, 0, 0.08);
     }
 
-    /* Botões da barra inferior */
+    /* Estilização dos itens da navegação */
     div[data-testid="stBottomBlockContainer"] div[role="radiogroup"] {
         display: flex !important;
         justify-content: space-around !important;
@@ -71,7 +116,7 @@ st.markdown("""
         color: #334155 !important;
     }
 
-    /* Botão ativado na barra inferior */
+    /* Botão selecionado na barra inferior */
     div[data-testid="stBottomBlockContainer"] label[data-checked="true"] {
         background-color: #0284c7 !important;
         color: #ffffff !important;
@@ -80,11 +125,10 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-
 # =========================================================
-# 2. CONEXÃO COM O BANCO DE DADOS NA NUVEM (Supabase)
+# 4. CONEXÃO COM O BANCO DE DADOS (Supabase)
 # =========================================================
-# Substitua com as suas credenciais do Supabase
+# Substitua com as suas credenciais sem barras no final do link
 SUPABASE_URL = "https://pasmbmpgxuirnhlpwojf.supabase.co"
 SUPABASE_KEY = "sb_publishable_XeiQp6uaRZ0Pby1B6QL_Kw_MMGu0AM2"
 
@@ -94,37 +138,32 @@ def conectar_banco():
 
 supabase: Client = conectar_banco()
 
-
 # =========================================================
-# 3. TELA DE SEGURANÇA E ACESSO
+# 5. SEGURANÇA E ACESSO
 # =========================================================
-SENHA_CAIXA = "1234"  # <-- Altere para a senha que preferir
+SENHA_CAIXA = "1234"
 
 if "autenticado" not in st.session_state:
     st.session_state.autenticado = False
 
 if not st.session_state.autenticado:
-    st.title("🔒 Acesso ao Caixa")
+    st.subheader("🔒 Acesso ao Sistema")
     senha_digitada = st.text_input("Digite a Senha para Entrar:", type="password")
     
-    if st.button("ENTRAR NO SISTEMA"):
+    if st.button("ENTRAR NO CAIXA"):
         if senha_digitada == SENHA_CAIXA:
             st.session_state.autenticado = True
             st.rerun()
         else:
-            st.error("Senha incorreta! Tente novamente.")
+            st.error("Senha incorreta!")
     st.stop()
 
-# Opção de bloqueio na barra lateral
 if st.sidebar.button("🔒 Sair / Bloquear App"):
     st.session_state.autenticado = False
     st.rerun()
 
-st.title("📱 Caixa Fácil")
-
-
 # =========================================================
-# 4. CONTROLE DAS TELAS (BARRA DE NAVEGAÇÃO INFERIOR)
+# 6. GERENCIAMENTO DE NAVEGAÇÃO
 # =========================================================
 OPCOES_NAVEGACAO = [
     "➕ Novo", 
@@ -138,25 +177,24 @@ if "tela_ativa" not in st.session_state:
 
 tela = st.session_state.tela_ativa
 
-
 # =========================================================
-# TELA 1: REALIZAR NOVO LANÇAMENTO
+# TELA 1: NOVO LANÇAMENTO
 # =========================================================
 if tela == "➕ Novo":
-    st.subheader("➕ Realizar Novo Lançamento")
+    st.subheader("➕ Realizar Lançamento")
 
     with st.form("formulario_registro", clear_on_submit=True):
         data_registro = st.date_input("Data do Lançamento:", value=date.today())
-        tipo = st.radio("Escolha a Operação:", ["Venda", "Gasto"], horizontal=True)
+        tipo = st.radio("Operação:", ["Venda", "Gasto"], horizontal=True)
         valor = st.number_input("Valor (R$):", min_value=0.01, step=1.0, format="%.2f")
         pagamento = st.selectbox("Forma de Pagamento:", ["Dinheiro", "Pix", "Cartão de Débito", "Cartão de Crédito"])
-        descricao = st.text_input("Descrição (Opcional):", placeholder="Ex: Venda de produto / Conta de luz")
+        descricao = st.text_input("Descrição (Opcional):", placeholder="Ex: Venda produto / Conta de luz")
         
         btn_salvar = st.form_submit_button("SALVAR REGISTRO")
         
         if btn_salvar:
             data_str = data_registro.strftime('%Y-%m-%d')
-            data_formatada = data_registro.strftime('%d/%m/%Y')
+            data_fmt = data_registro.strftime('%d/%m/%Y')
             
             novo_item = {
                 "data": data_str,
@@ -166,19 +204,17 @@ if tela == "➕ Novo":
                 "descricao": descricao
             }
             supabase.table("lancamentos").insert(novo_item).execute()
-            st.success(f"✅ {tipo} registrada com sucesso para {data_formatada}!")
+            st.success(f"✅ {tipo} registrada para {data_fmt}!")
             st.rerun()
 
-
 # =========================================================
-# TELA 2: LISTA DE LANÇAMENTOS (COM SELETOR NO CABEÇALHO)
+# TELA 2: LISTA DE LANÇAMENTOS
 # =========================================================
 elif tela == "📋 Lista":
-    st.subheader("📋 Lançamentos Cadastrados")
+    st.subheader("📋 Registros do Dia")
     
-    # Caixa de seleção do dia NO CABEÇALHO
     data_selecionada = st.date_input(
-        "📅 Selecione o dia para visualizar:", 
+        "📅 Selecione a data:", 
         value=date.today(), 
         key="data_filtro_lista"
     )
@@ -186,13 +222,12 @@ elif tela == "📋 Lista":
     data_fmt_lista = data_selecionada.strftime('%d/%m/%Y')
 
     st.divider()
-    st.markdown(f"### Lançamentos de: **{data_fmt_lista}**")
 
     resposta = supabase.table("lancamentos").select("*").eq("data", data_str_lista).execute()
     df_lancamentos = pd.DataFrame(resposta.data)
 
     if df_lancamentos.empty:
-        st.info(f"Nenhum lançamento cadastrado no dia {data_fmt_lista}.")
+        st.info(f"Nenhum lançamento no dia {data_fmt_lista}.")
     else:
         for _, row in df_lancamentos.iterrows():
             icone = "🟢" if row['tipo'] == 'Venda' else "🔴"
@@ -201,19 +236,16 @@ elif tela == "📋 Lista":
                 st.write(f"**Descrição:** {row['descricao'] if row['descricao'] else 'Sem descrição'}")
                 col1, col2 = st.columns(2)
                 
-                # Botão Apagar
                 if col1.button("🗑️ Apagar", key=f"apagar_{row['id']}"):
                     supabase.table("lancamentos").delete().eq("id", row['id']).execute()
                     st.warning("Lançamento apagado!")
                     st.rerun()
 
-                # Botão Corrigir Valor
-                novo_val = col2.number_input("Corrigir Valor (R$):", value=float(row['valor']), key=f"valor_{row['id']}")
-                if col2.button("💾 Atualizar", key=f"atualizar_{row['id']}"):
+                novo_val = col2.number_input("Corrigir (R$):", value=float(row['valor']), key=f"valor_{row['id']}")
+                if col2.button("💾 Salvar", key=f"atualizar_{row['id']}"):
                     supabase.table("lancamentos").update({"valor": novo_val}).eq("id", row['id']).execute()
-                    st.success("Valor corrigido!")
+                    st.success("Valor atualizado!")
                     st.rerun()
-
 
 # =========================================================
 # TELA 3: FECHAMENTO DO DIA
@@ -222,7 +254,7 @@ elif tela == "📊 Fechamento":
     st.subheader("📊 Fechamento do Dia")
     
     data_fechamento = st.date_input(
-        "📅 Selecione a data do fechamento:", 
+        "📅 Selecione a data:", 
         value=date.today(), 
         key="data_filtro_fechamento"
     )
@@ -240,12 +272,12 @@ elif tela == "📊 Fechamento":
         saldo_dia = vendas_totais - gastos_totais
 
         c1, c2 = st.columns(2)
-        c1.metric("🟢 Vendas Totais (+)", f"R$ {vendas_totais:.2f}")
-        c2.metric("🔴 Gastos Totais (-)", f"R$ {gastos_totais:.2f}")
-        st.metric("💰 Saldo do Dia", f"R$ {saldo_dia:.2f}")
+        c1.metric("🟢 Vendas (+)", f"R$ {vendas_totais:.2f}")
+        c2.metric("🔴 Gastos (-)", f"R$ {gastos_totais:.2f}")
+        st.metric("💰 Saldo Líquido", f"R$ {saldo_dia:.2f}")
 
         st.divider()
-        st.subheader("💳 Detalhamento de Valores")
+        st.subheader("💳 Detalhamento de Entradas")
 
         vendas_dinheiro = df_resumo[(df_resumo['pagamento'] == 'Dinheiro') & (df_resumo['tipo'] == 'Venda')]['valor'].sum()
         gastos_dinheiro = df_resumo[(df_resumo['pagamento'] == 'Dinheiro') & (df_resumo['tipo'] == 'Gasto')]['valor'].sum()
@@ -256,23 +288,18 @@ elif tela == "📊 Fechamento":
         credito = df_resumo[(df_resumo['pagamento'] == 'Cartão de Crédito') & (df_resumo['tipo'] == 'Venda')]['valor'].sum()
 
         col_p1, col_p2 = st.columns(2)
-        with col_p1:
-            st.markdown("💵 **Dinheiro na Gaveta**")
-            st.write(f"R$ {gaveta_dinheiro:.2f}")
-        with col_p2:
-            st.markdown("📱 **Total em Pix**")
-            st.write(f"R$ {pix:.2f}")
+        col_p1.markdown("💵 **Gaveta (Dinheiro)**")
+        col_p1.write(f"R$ {gaveta_dinheiro:.2f}")
+        col_p2.markdown("📱 **Pix**")
+        col_p2.write(f"R$ {pix:.2f}")
 
         col_p3, col_p4 = st.columns(2)
-        with col_p3:
-            st.markdown("💳 **Cartão Débito**")
-            st.write(f"R$ {debito:.2f}")
-        with col_p4:
-            st.markdown("💳 **Cartão Crédito**")
-            st.write(f"R$ {credito:.2f}")
+        col_p3.markdown("💳 **Débito**")
+        col_p3.write(f"R$ {debito:.2f}")
+        col_p4.markdown("💳 **Crédito**")
+        col_p4.write(f"R$ {credito:.2f}")
     else:
-        st.info(f"Nenhum lançamento encontrado em {data_fmt_fech}.")
-
+        st.info(f"Nenhum lançamento em {data_fmt_fech}.")
 
 # =========================================================
 # TELA 4: DEMONSTRATIVO MENSAL
@@ -289,12 +316,10 @@ elif tela == "📅 Mensal":
     ano_atual = date.today().year
     ano_selecionado = col_m2.selectbox("Escolha o Ano:", list(range(ano_atual - 1, ano_atual + 3)), index=1)
 
-    # Calcula o primeiro e o último dia do mês selecionado
     _, ultimo_dia = calendar.monthrange(ano_selecionado, num_mes)
     data_inicio = f"{ano_selecionado}-{num_mes:02d}-01"
     data_fim = f"{ano_selecionado}-{num_mes:02d}-{ultimo_dia:02d}"
 
-    # Consulta filtrando do dia 01 até o último dia do mês
     resposta_mensal = (
         supabase.table("lancamentos")
         .select("*")
@@ -312,9 +337,9 @@ elif tela == "📅 Mensal":
         saldo_m = vendas_m - gastos_m
 
         cm1, cm2 = st.columns(2)
-        cm1.metric("🟢 Vendas no Mês (+)", f"R$ {vendas_m:.2f}")
-        cm2.metric("🔴 Gastos no Mês (-)", f"R$ {gastos_m:.2f}")
-        st.metric("💰 Resultado Líquido do Mês", f"R$ {saldo_m:.2f}")
+        cm1.metric("🟢 Vendas (+)", f"R$ {vendas_m:.2f}")
+        cm2.metric("🔴 Gastos (-)", f"R$ {gastos_m:.2f}")
+        st.metric("💰 Resultado Líquido", f"R$ {saldo_m:.2f}")
 
         st.divider()
         st.subheader("🗓️ Resumo Dia a Dia")
@@ -331,10 +356,10 @@ elif tela == "📅 Mensal":
         
         st.dataframe(df_resumo_dias[['Data', 'Vendas (R$)', 'Gastos (R$)', 'Saldo (R$)']], use_container_width=True)
     else:
-        st.info(f"Nenhum lançamento encontrado em {mes_selecionado} de {ano_selecionado}.")
+        st.info(f"Nenhum lançamento em {mes_selecionado} de {ano_selecionado}.")
 
 # =========================================================
-# BARRA DE NAVEGAÇÃO FIXA NO RODAPÉ DO CELULAR
+# BARRA FIXA DE NAVEGAÇÃO INFERIOR
 # =========================================================
 with st.bottom:
     escolha_inferior = st.radio(
