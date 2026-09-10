@@ -67,12 +67,20 @@ st.markdown("""
         font-size: 17px !important;
     }
 
-    /* Margens superior e inferior garantem que nenhum conteúdo ou botão seja coberto */
-    .main .block-container {
-        padding-top: 65px !important;    /* Garante espaço abaixo do cabeçalho */
-        padding-bottom: 110px !important; /* Garante espaço acima da barra inferior */
+    /* Ajuste do container principal */
+    .main .block-container, [data-testid="stMainBlockContainer"] {
+        padding-top: 65px !important;
         padding-left: 15px !important;
         padding-right: 15px !important;
+    }
+
+    /* CRUCIAL: CRIA UM BLOCO INVISÍVEL AO FINAL DO CONTEÚDO FORÇANDO A ROLAGEM PASSAR DO MENU FIXO */
+    .main .block-container::after, 
+    [data-testid="stMainBlockContainer"]::after {
+        content: "";
+        display: block;
+        height: 150px !important;
+        width: 100%;
     }
 
     /* Botões grandes e fáceis de tocar com o polegar */
