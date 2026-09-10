@@ -31,8 +31,8 @@ st.markdown("""
         <title>Caixa Fácil</title>
         <meta name="apple-mobile-web-app-title" content="Caixa Fácil">
         <meta name="application-name" content="Caixa Fácil">
-        <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/SEU-USUARIO/caixa-facil/main/icon.png">
-        <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/SEU-USUARIO/caixa-facil/main/icon.png">
+        <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Sarahsantoss/caixa-facil/main/icon.png">
+        <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Sarahsantoss/caixa-facil/main/icon.png">
     </head>
     
     <!-- CABEÇALHO FIXO NO TOPO DA TELA -->
