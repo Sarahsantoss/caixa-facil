@@ -176,6 +176,21 @@ if st.sidebar.button("🔒 Sair / Bloquear App"):
     st.rerun()
 
 # =========================================================
+# 6. GERENCIAMENTO DE NAVEGAÇÃO
+# =========================================================
+OPCOES_NAVEGACAO = [
+    "➕ Novo", 
+    "📋 Lista", 
+    "📊 Fechamento", 
+    "📅 Mensal"
+]
+
+if "tela_ativa" not in st.session_state:
+    st.session_state.tela_ativa = "➕ Novo"
+
+tela = st.session_state.tela_ativa
+
+# =========================================================
 # TELA 1: NOVO LANÇAMENTO
 # =========================================================
 if tela == "➕ Novo":
