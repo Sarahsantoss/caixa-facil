@@ -190,71 +190,95 @@ with col_sair:
 # 6. GERENCIAMENTO DE NAVEGAÇÃO
 # =========================================================
 OPCOES_NAVEGACAO = [
-    "➕ Novo",
+    "+ Novo",
     "📋 Lista",
     "📉 Fechamento",
     "📊 Mensal"
 ]
 
-# Estilo CSS que altera APENAS o menu de navegação (fora do formulário)
+# Validação e recuperação do estado da sessão
+if "tela_ativa" not in st.session_state or st.session_state.tela_ativa not in OPCOES_NAVEGACAO:
+    st.session_state.tela_ativa = OPCOES_NAVEGACAO[0]
+
+indice_atual = OPCOES_NAVEGACAO.index(st.session_state.tela_ativa)
+
+# CSS direcionado APENAS para o menu de navegação
 st.markdown("""
     <style>
-    /* Fixa o menu de navegação no rodapé */
-    div[data-testid="stRadio"]:not(form div[data-testid="stRadio"]) {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background-color: #ffffff;
-        padding: 8px 12px;
-        box-shadow: 0px -3px 12px rgba(0, 0, 0, 0.15);
-        z-index: 999999;
+    /* Fixa APENAS a barra de navegação no rodapé */
+    div[data-testid="stRadio"]:has(input[value="+ Novo"]),
+    div[data-testid="stRadio"]:has(input[value="📋 Lista"]) {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        background-color: #ffffff !important;
+        padding: 8px 10px !important;
+        box-shadow: 0px -4px 15px rgba(0, 0, 0, 0.15) !important;
+        z-index: 999999 !important;
     }
 
-    /* Esconde as bolinhas apenas no menu de navegação */
-    div[data-testid="stRadio"]:not(form div[data-testid="stRadio"]) input[type="radio"],
-    div[data-testid="stRadio"]:not(form div[data-testid="stRadio"]) div[role="radio"] > div:first-child {
+    /* Oculta as bolinhas APENAS no menu de navegação */
+    div[data-testid="stRadio"]:has(input[value="+ Novo"]) input[type="radio"],
+    div[data-testid="stRadio"]:has(input[value="+ Novo"]) div[role="radio"] > div:first-child,
+    div[data-testid="stRadio"]:has(input[value="📋 Lista"]) input[type="radio"],
+    div[data-testid="stRadio"]:has(input[value="📋 Lista"]) div[role="radio"] > div:first-child {
         display: none !important;
     }
 
-    /* Organiza os botões lado a lado */
-    div[data-testid="stRadio"]:not(form div[data-testid="stRadio"]) > div[role="radiogroup"] {
-        display: flex;
-        justify-content: space-around;
-        gap: 6px;
+    /* Organiza os botões lado a lado APENAS no menu */
+    div[data-testid="stRadio"]:has(input[value="+ Novo"]) > div[role="radiogroup"],
+    div[data-testid="stRadio"]:has(input[value="📋 Lista"]) > div[role="radiogroup"] {
+        display: flex !important;
         flex-direction: row !important;
+        justify-content: space-between !important;
+        gap: 6px !important;
     }
 
-    /* Estilo visual dos botões da barra inferior */
-    div[data-testid="stRadio"]:not(form div[data-testid="stRadio"]) label {
-        flex: 1;
-        text-align: center;
-        background-color: #f1f3f5;
-        color: #333333;
-        padding: 10px 4px;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 13px;
-        cursor: pointer;
-        border: none;
+    /* Estilo dos botões inativos do menu */
+    div[data-testid="stRadio"]:has(input[value="+ Novo"]) label,
+    div[data-testid="stRadio"]:has(input[value="📋 Lista"]) label {
+        flex: 1 !important;
+        text-align: center !important;
+        background-color: #f0f2f6 !important;
+        color: #333333 !important;
+        padding: 10px 2px !important;
+        border-radius: 10px !important;
+        font-weight: 500 !important;
+        font-size: 13px !important;
+        cursor: pointer !important;
+        border: 1px solid #d0d4dc !important;
         margin: 0 !important;
     }
 
-    /* Dá espaço no fundo para que o formulário não fique coberto pelo menu */
+    /* Estilo do botão selecionado (Azul) */
+    div[data-testid="stRadio"]:has(input[value="+ Novo"]) label:has(input:checked),
+    div[data-testid="stRadio"]:has(input[value="📋 Lista"]) label:has(input:checked) {
+        background-color: #0066cc !important;
+        color: #ffffff !important;
+        font-weight: bold !important;
+        border-color: #0066cc !important;
+    }
+
+    /* Espaço na parte inferior para o conteúdo não ficar tapado */
     .main .block-container {
-        padding-bottom: 90px !important;
+        padding-bottom: 95px !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Desenha a barra de navegação no rodapé com as suas opções
+# Desenha o menu no rodapé
 tela = st.radio(
     "Navegação",
     options=OPCOES_NAVEGACAO,
+    index=indice_atual,
     horizontal=True,
     label_visibility="collapsed",
     key="menu_navegacao_principal"
 )
+
+# Atualiza a aba ativa
+st.session_state.tela_ativa = tela
 
 # =========================================================
 # TELA 1: NOVO LANÇAMENTO
