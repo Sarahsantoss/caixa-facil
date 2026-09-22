@@ -6,7 +6,7 @@ from supabase import create_client, Client
 from PIL import Image
 
 # =========================================================
-# 1. CARREGAR ÍCONE DO APLICATIVO
+# 1. CARREGAR ÍCONE DA APLICAÇÃO
 # =========================================================
 try:
     icone_app = Image.open("icon.png")
@@ -14,7 +14,7 @@ except Exception:
     icone_app = "📱"
 
 # =========================================================
-# 2. CONFIGURAÇÃO DA PÁGINA E NOME DO APP
+# 2. CONFIGURAÇÃO DA PÁGINA E NOME DA APP
 # =========================================================
 st.set_page_config(
     page_title="Caixa Fácil",
@@ -24,7 +24,7 @@ st.set_page_config(
 )
 
 # =========================================================
-# 3. CABEÇALHO FIXO, PWA E ESTILO CSS OTIMIZADO PARA CELULAR
+# 3. CABEÇALHO FIXO, PWA E CSS DA BARRA INFERIOR
 # =========================================================
 st.markdown("""
     <head>
@@ -35,7 +35,7 @@ st.markdown("""
         <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Sarahsantoss/caixa-facil/main/icon.png">
     </head>
     
-    <!-- CABEÇALHO FIXO NO TOPO DA TELA -->
+    <!-- CABEÇALHO FIXO NO TOPO DO ECRÃ -->
     <div style="
         position: fixed;
         top: 0;
@@ -62,81 +62,129 @@ st.markdown("""
     header {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* Fontes adaptadas para smartphone */
+    /* Ajustes globais de fonte */
     html, body, [class*="css"], .stMarkdown, p, label {
-        font-size: 17px !important;
+        font-size: 16px !important;
     }
 
-    /* Ajuste do container principal */
+    /* Espaçamento do conteúdo para não tapar o cabeçalho nem a barra inferior */
     .main .block-container, [data-testid="stMainBlockContainer"] {
         padding-top: 65px !important;
-        padding-left: 15px !important;
-        padding-right: 15px !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        padding-bottom: 100px !important;
     }
 
-    /* CRUCIAL: CRIA UM BLOCO INVISÍVEL AO FINAL DO CONTEÚDO FORÇANDO A ROLAGEM PASSAR DO MENU FIXO */
-    .main .block-container::after, 
-    [data-testid="stMainBlockContainer"]::after {
-        content: "";
-        display: block;
-        height: 150px !important;
-        width: 100%;
-    }
-
-    /* Botões grandes e fáceis de tocar com o polegar */
+    /* Botões padrão do formulário */
     div.stButton > button {
         width: 100% !important;
-        height: 3.4em !important;
-        font-size: 17px !important;
+        height: 3.3em !important;
+        font-size: 16px !important;
         font-weight: bold !important;
         border-radius: 12px !important;
     }
 
-    /* BARRA FIXA DE NAVEGAÇÃO NO RODAPÉ */
-    div[data-testid="stBottomBlockContainer"] {
+    /* =========================================================
+       BARRA DE NAVEGAÇÃO INFERIOR FIXA (RADIO FORA DE FORMULÁRIOS)
+       ========================================================= */
+
+    /* Container principal da barra fixa no rodapé */
+    div[data-testid="stRadio"]:not(form *) {
         position: fixed !important;
         bottom: 0 !important;
         left: 0 !important;
         right: 0 !important;
         background-color: #ffffff !important;
         border-top: 2px solid #e2e8f0 !important;
-        padding: 8px 6px 20px 6px !important;
-        z-index: 99999 !important;
-        box-shadow: 0px -4px 12px rgba(0, 0, 0, 0.08);
+        padding: 8px 6px 16px 6px !important;
+        z-index: 999999 !important;
+        box-shadow: 0px -4px 15px rgba(0, 0, 0, 0.12) !important;
     }
 
-    /* Estilização dos itens da navegação */
-    div[data-testid="stBottomBlockContainer"] div[role="radiogroup"] {
+    /* Esconde o rótulo do radio se presente */
+    div[data-testid="stRadio"]:not(form *) > label {
+        display: none !important;
+    }
+
+    /* Disposição dos botões lado a lado */
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] {
         display: flex !important;
+        flex-direction: row !important;
         justify-content: space-around !important;
+        align-items: center !important;
         gap: 4px !important;
-    }
-    
-    div[data-testid="stBottomBlockContainer"] label {
-        flex: 1 !important;
-        background-color: #f1f5f9 !important;
-        border: 1px solid #cbd5e1 !important;
-        border-radius: 10px !important;
-        padding: 10px 2px !important;
-        text-align: center !important;
-        font-size: 13px !important;
-        font-weight: bold !important;
-        color: #334155 !important;
+        width: 100% !important;
     }
 
-    /* Botão selecionado na barra inferior */
-    div[data-testid="stBottomBlockContainer"] label[data-checked="true"] {
+    /* Estilo base de cada botão (Inativo) */
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] > label,
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] > div[role="radio"] {
+        flex: 1 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background-color: #f1f5f9 !important;
+        color: #334155 !important;
+        padding: 10px 2px !important;
+        border-radius: 10px !important;
+        border: 1px solid #cbd5e1 !important;
+        cursor: pointer !important;
+        margin: 0 !important;
+        text-align: center !important;
+        min-width: 0 !important;
+    }
+
+    /* OCULTA A BOLINHA E ÍCONES NATIVOS DO RADIO SEM OCULTAR O TEXTO */
+    div[data-testid="stRadio"]:not(form *) input[type="radio"] {
+        display: none !important;
+    }
+
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] label > div:first-child:not([data-testid="stMarkdownContainer"]),
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] label div[aria-hidden="true"],
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] svg {
+        display: none !important;
+        width: 0px !important;
+        height: 0px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        visibility: hidden !important;
+    }
+
+    /* GARANTE A VISIBILIDADE E CENTRALIZAÇÃO DO TEXTO */
+    div[data-testid="stRadio"]:not(form *) [data-testid="stMarkdownContainer"] {
+        display: block !important;
+        visibility: visible !important;
+        width: 100% !important;
+        text-align: center !important;
+    }
+
+    div[data-testid="stRadio"]:not(form *) [data-testid="stMarkdownContainer"] p {
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        white-space: nowrap !important;
+        text-align: center !important;
+    }
+
+    /* Estilo do botão SELECIONADO (Ativo - Azul) */
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] > label:has(input:checked),
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] > div[role="radio"][aria-checked="true"] {
         background-color: #0284c7 !important;
-        color: #ffffff !important;
         border-color: #0284c7 !important;
+    }
+
+    /* Cor do texto do botão ativo */
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] > label:has(input:checked) *,
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] > div[role="radio"][aria-checked="true"] * {
+        color: #ffffff !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
 # =========================================================
-# 4. CONEXÃO COM O BANCO DE DADOS (Supabase)
+# 4. CONEXÃO COM A BASE DE DADOS (Supabase)
 # =========================================================
-# Substitua com as suas credenciais sem barras no final do link
 SUPABASE_URL = "https://pasmbmpgxuirnhlpwojf.supabase.co"
 SUPABASE_KEY = "sb_publishable_XeiQp6uaRZ0Pby1B6QL_Kw_MMGu0AM2"
 
@@ -155,14 +203,13 @@ except Exception:
     st.error("⚠️ Erro de segurança: Chave 'SENHA_CAIXA' não encontrada nos Secrets do Streamlit.")
     st.stop()
 
-# Reativa o login automaticamente se já existir o parâmetro na URL
 if st.query_params.get("auth") == "true":
     st.session_state.autenticado = True
 
 if "autenticado" not in st.session_state:
     st.session_state.autenticado = False
 
-# TELA DE LOGIN
+# ECRÃ DE LOGIN
 if not st.session_state.autenticado:
     st.subheader("🔒 Acesso ao Sistema")
     senha_digitada = st.text_input("Digite a Senha para Entrar:", type="password")
@@ -170,118 +217,46 @@ if not st.session_state.autenticado:
     if st.button("ENTRAR NO CAIXA"):
         if senha_digitada == SENHA_CAIXA:
             st.session_state.autenticado = True
-            st.query_params["auth"] = "true"  # Grava no navegador para não pedir senha a todo momento
+            st.query_params["auth"] = "true"
             st.rerun()
         else:
             st.error("Senha incorreta!")
     st.stop()
 
-# =========================================================
-# BOTÃO DE SAIR VISÍVEL NO TOPO DA TELA
-# =========================================================
+# BOTÃO DE SAIR NO TOPO
 col_espaco, col_sair = st.columns([3, 1])
 with col_sair:
     if st.button("🔒 Sair", key="btn_sair_topo"):
         st.session_state.autenticado = False
-        st.query_params.clear()  # Limpa o parâmetro e exige a senha no próximo acesso
+        st.query_params.clear()
         st.rerun()
 
 # =========================================================
-# 6. GERENCIAMENTO DE NAVEGAÇÃO
+# 6. GESTÃO DE NAVEGAÇÃO INFERIOR
 # =========================================================
 OPCOES_NAVEGACAO = [
-    "+ Novo",
+    "➕ Novo",
     "📋 Lista",
-    "📉 Fechamento",
-    "📊 Mensal"
+    "📊 Fechamento",
+    "📅 Mensal"
 ]
 
-# Validação e recuperação do estado da sessão
 if "tela_ativa" not in st.session_state or st.session_state.tela_ativa not in OPCOES_NAVEGACAO:
     st.session_state.tela_ativa = OPCOES_NAVEGACAO[0]
 
-indice_atual = OPCOES_NAVEGACAO.index(st.session_state.tela_ativa)
-
-# CSS direcionado APENAS para o menu de navegação
-st.markdown("""
-    <style>
-    /* Fixa APENAS a barra de navegação no rodapé */
-    div[data-testid="stRadio"]:has(input[value="+ Novo"]),
-    div[data-testid="stRadio"]:has(input[value="📋 Lista"]) {
-        position: fixed !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        background-color: #ffffff !important;
-        padding: 8px 10px !important;
-        box-shadow: 0px -4px 15px rgba(0, 0, 0, 0.15) !important;
-        z-index: 999999 !important;
-    }
-
-    /* Oculta as bolinhas APENAS no menu de navegação */
-    div[data-testid="stRadio"]:has(input[value="+ Novo"]) input[type="radio"],
-    div[data-testid="stRadio"]:has(input[value="+ Novo"]) div[role="radio"] > div:first-child,
-    div[data-testid="stRadio"]:has(input[value="📋 Lista"]) input[type="radio"],
-    div[data-testid="stRadio"]:has(input[value="📋 Lista"]) div[role="radio"] > div:first-child {
-        display: none !important;
-    }
-
-    /* Organiza os botões lado a lado APENAS no menu */
-    div[data-testid="stRadio"]:has(input[value="+ Novo"]) > div[role="radiogroup"],
-    div[data-testid="stRadio"]:has(input[value="📋 Lista"]) > div[role="radiogroup"] {
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: space-between !important;
-        gap: 6px !important;
-    }
-
-    /* Estilo dos botões inativos do menu */
-    div[data-testid="stRadio"]:has(input[value="+ Novo"]) label,
-    div[data-testid="stRadio"]:has(input[value="📋 Lista"]) label {
-        flex: 1 !important;
-        text-align: center !important;
-        background-color: #f0f2f6 !important;
-        color: #333333 !important;
-        padding: 10px 2px !important;
-        border-radius: 10px !important;
-        font-weight: 500 !important;
-        font-size: 13px !important;
-        cursor: pointer !important;
-        border: 1px solid #d0d4dc !important;
-        margin: 0 !important;
-    }
-
-    /* Estilo do botão selecionado (Azul) */
-    div[data-testid="stRadio"]:has(input[value="+ Novo"]) label:has(input:checked),
-    div[data-testid="stRadio"]:has(input[value="📋 Lista"]) label:has(input:checked) {
-        background-color: #0066cc !important;
-        color: #ffffff !important;
-        font-weight: bold !important;
-        border-color: #0066cc !important;
-    }
-
-    /* Espaço na parte inferior para o conteúdo não ficar tapado */
-    .main .block-container {
-        padding-bottom: 95px !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-# Desenha o menu no rodapé
 tela = st.radio(
-    "Navegação",
+    label="Navegação",
     options=OPCOES_NAVEGACAO,
-    index=indice_atual,
+    index=OPCOES_NAVEGACAO.index(st.session_state.tela_ativa),
     horizontal=True,
     label_visibility="collapsed",
     key="menu_navegacao_principal"
 )
 
-# Atualiza a aba ativa
 st.session_state.tela_ativa = tela
 
 # =========================================================
-# TELA 1: NOVO LANÇAMENTO
+# ECRÃ 1: NOVO REGISTO
 # =========================================================
 if tela == "➕ Novo":
     st.subheader("➕ Realizar Lançamento")
@@ -311,7 +286,7 @@ if tela == "➕ Novo":
             st.rerun()
 
 # =========================================================
-# TELA 2: LISTA DE LANÇAMENTOS
+# ECRÃ 2: LISTA DE REGISTOS
 # =========================================================
 elif tela == "📋 Lista":
     st.subheader("📋 Registros do Dia")
@@ -351,7 +326,7 @@ elif tela == "📋 Lista":
                     st.rerun()
 
 # =========================================================
-# TELA 3: FECHAMENTO DO DIA
+# ECRÃ 3: FECHO DO DIA
 # =========================================================
 elif tela == "📊 Fechamento":
     st.subheader("📊 Fechamento do Dia")
@@ -405,7 +380,7 @@ elif tela == "📊 Fechamento":
         st.info(f"Nenhum lançamento em {data_fmt_fech}.")
 
 # =========================================================
-# TELA 4: DEMONSTRATIVO MENSAL
+# ECRÃ 4: DEMONSTRATIVO MENSAL
 # =========================================================
 elif tela == "📅 Mensal":
     st.subheader("📅 Demonstrativo Mensal")
@@ -460,20 +435,3 @@ elif tela == "📅 Mensal":
         st.dataframe(df_resumo_dias[['Data', 'Vendas (R$)', 'Gastos (R$)', 'Saldo (R$)']], use_container_width=True)
     else:
         st.info(f"Nenhum lançamento em {mes_selecionado} de {ano_selecionado}.")
-
-# =========================================================
-# BARRA FIXA DE NAVEGAÇÃO INFERIOR
-# =========================================================
-with st.bottom:
-    escolha_inferior = st.radio(
-        label="Navegação",
-        options=OPCOES_NAVEGACAO,
-        index=OPCOES_NAVEGACAO.index(st.session_state.tela_ativa),
-        horizontal=True,
-        label_visibility="collapsed",
-        key="barra_navegacao_bottom"
-    )
-    
-    if escolha_inferior != st.session_state.tela_ativa:
-        st.session_state.tela_ativa = escolha_inferior
-        st.rerun()
