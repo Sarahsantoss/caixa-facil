@@ -1,9 +1,9 @@
-name: Keep Supabase Awake
+name: Keep Supabase and Streamlit Awake
 
 on:
   schedule:
     # Executa a cada 3 dias
-    - cron: '0 0 */3 * *'
+    - cron: '0 0 */2 * *'
   workflow_dispatch:
 
 jobs:
@@ -13,3 +13,7 @@ jobs:
       - name: Ping Supabase API
         run: |
           curl -I https://pasmbmpgxuirnhlpwojf.supabase.co/rest/v1/
+
+      - name: Ping Streamlit App
+        run: |
+          curl -s https://caixa-facil-ervhiqc8bigpprp5zjzvra.streamlit.app > /dev/null
