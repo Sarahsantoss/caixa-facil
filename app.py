@@ -24,7 +24,7 @@ st.set_page_config(
 )
 
 # =========================================================
-# 3. CABEÇALHO FIXO, PWA E CSS DO MENU INFERIOR
+# 3. CABEÇALHO FIXO, PWA E CSS DA BARRA INFERIOR
 # =========================================================
 st.markdown("""
     <head>
@@ -62,94 +62,121 @@ st.markdown("""
     header {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* Fontes adaptadas para smartphone */
+    /* Ajustes globais de fonte */
     html, body, [class*="css"], .stMarkdown, p, label {
-        font-size: 17px !important;
+        font-size: 16px !important;
     }
 
-    /* Ajuste do container principal para não tapar o conteúdo */
+    /* Espaçamento do conteúdo para não tapar o cabeçalho nem a barra inferior */
     .main .block-container, [data-testid="stMainBlockContainer"] {
         padding-top: 65px !important;
-        padding-left: 15px !important;
-        padding-right: 15px !important;
-        padding-bottom: 110px !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        padding-bottom: 100px !important;
     }
 
-    /* Botões padrão do sistema */
+    /* Botões padrão do formulário */
     div.stButton > button {
         width: 100% !important;
-        height: 3.4em !important;
-        font-size: 17px !important;
+        height: 3.3em !important;
+        font-size: 16px !important;
         font-weight: bold !important;
         border-radius: 12px !important;
     }
 
     /* =========================================================
-       ESTILO DA BARRA INFERIOR DE NAVEGAÇÃO
+       BARRA DE NAVEGAÇÃO INFERIOR FIXA (RADIO FORA DE FORMULÁRIOS)
        ========================================================= */
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) {
+
+    /* Container principal da barra fixa no rodapé */
+    div[data-testid="stRadio"]:not(form *) {
         position: fixed !important;
         bottom: 0 !important;
         left: 0 !important;
         right: 0 !important;
         background-color: #ffffff !important;
         border-top: 2px solid #e2e8f0 !important;
-        padding: 8px 10px 18px 10px !important;
+        padding: 8px 6px 16px 6px !important;
         z-index: 999999 !important;
         box-shadow: 0px -4px 15px rgba(0, 0, 0, 0.12) !important;
     }
 
-    /* OCULTA TOTALMENTE AS BOLINHAS E ÍCONES DE SELEÇÃO NO MENU */
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) input[type="radio"],
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radio"] > div:first-child,
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radio"] > span:first-child,
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) label > div:first-child,
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) svg {
+    /* Esconde o rótulo do radio se presente */
+    div[data-testid="stRadio"]:not(form *) > label {
         display: none !important;
-        visibility: hidden !important;
+    }
+
+    /* Disposição dos botões lado a lado */
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-around !important;
+        align-items: center !important;
+        gap: 4px !important;
+        width: 100% !important;
+    }
+
+    /* Estilo base de cada botão (Inativo) */
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] > label,
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] > div[role="radio"] {
+        flex: 1 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background-color: #f1f5f9 !important;
+        color: #334155 !important;
+        padding: 10px 2px !important;
+        border-radius: 10px !important;
+        border: 1px solid #cbd5e1 !important;
+        cursor: pointer !important;
+        margin: 0 !important;
+        text-align: center !important;
+        min-width: 0 !important;
+    }
+
+    /* OCULTA A BOLINHA E ÍCONES NATIVOS DO RADIO SEM OCULTAR O TEXTO */
+    div[data-testid="stRadio"]:not(form *) input[type="radio"] {
+        display: none !important;
+    }
+
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] label > div:first-child:not([data-testid="stMarkdownContainer"]),
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] label div[aria-hidden="true"],
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] svg {
+        display: none !important;
         width: 0px !important;
         height: 0px !important;
         margin: 0 !important;
         padding: 0 !important;
+        visibility: hidden !important;
     }
 
-    /* Disposição dos botões em linha horizontal */
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radiogroup"] {
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: space-around !important;
-        gap: 6px !important;
-    }
-
-    /* Estilo base dos botões (Inativo) */
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) label,
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radio"] {
-        flex: 1 !important;
+    /* GARANTE A VISIBILIDADE E CENTRALIZAÇÃO DO TEXTO */
+    div[data-testid="stRadio"]:not(form *) [data-testid="stMarkdownContainer"] {
+        display: block !important;
+        visibility: visible !important;
+        width: 100% !important;
         text-align: center !important;
-        justify-content: center !important;
-        align-items: center !important;
-        background-color: #f1f5f9 !important;
-        color: #334155 !important;
-        padding: 12px 2px !important;
-        border-radius: 10px !important;
-        font-weight: 600 !important;
-        font-size: 13px !important;
-        border: 1px solid #cbd5e1 !important;
-        cursor: pointer !important;
-        margin: 0 !important;
     }
 
-    /* Estilo do botão selecionado (Ativo - Azul) */
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) label:has(input:checked),
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radio"][aria-checked="true"] {
+    div[data-testid="stRadio"]:not(form *) [data-testid="stMarkdownContainer"] p {
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        white-space: nowrap !important;
+        text-align: center !important;
+    }
+
+    /* Estilo do botão SELECIONADO (Ativo - Azul) */
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] > label:has(input:checked),
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] > div[role="radio"][aria-checked="true"] {
         background-color: #0284c7 !important;
-        color: #ffffff !important;
         border-color: #0284c7 !important;
     }
 
-    /* Garante o texto em branco para a opção ativa */
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) label:has(input:checked) *,
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radio"][aria-checked="true"] * {
+    /* Cor do texto do botão ativo */
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] > label:has(input:checked) *,
+    div[data-testid="stRadio"]:not(form *) div[role="radiogroup"] > div[role="radio"][aria-checked="true"] * {
         color: #ffffff !important;
     }
     </style>
@@ -205,7 +232,7 @@ with col_sair:
         st.rerun()
 
 # =========================================================
-# 6. GESTÃO DE NAVEGAÇÃO
+# 6. GESTÃO DE NAVEGAÇÃO INFERIOR
 # =========================================================
 OPCOES_NAVEGACAO = [
     "➕ Novo",
