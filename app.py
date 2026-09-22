@@ -149,16 +149,21 @@ supabase: Client = conectar_banco()
 # =========================================================
 # 5. SEGURANÇA E ACESSO
 # =========================================================
-# Busca a senha exclusivamente das configurações seguras (Secrets)
+# Busca a senha das configurações seguras (Secrets)
 try:
     SENHA_CAIXA = st.secrets["SENHA_CAIXA"]
 except Exception:
     st.error("⚠️ Erro de segurança: Chave 'SENHA_CAIXA' não encontrada nos Secrets do Streamlit.")
     st.stop()
 
+# Reativa o login automaticamente se já existir o parâmetro na URL
+if st.query_params.get("auth") == "true":
+    st.session_state.autenticado = True
+
 if "autenticado" not in st.session_state:
     st.session_state.autenticado = False
 
+# Tela de Login
 if not st.session_state.autenticado:
     st.subheader("🔒 Acesso ao Sistema")
     senha_digitada = st.text_input("Digite a Senha para Entrar:", type="password")
@@ -166,13 +171,16 @@ if not st.session_state.autenticado:
     if st.button("ENTRAR NO CAIXA"):
         if senha_digitada == SENHA_CAIXA:
             st.session_state.autenticado = True
+            st.query_params["auth"] = "true"  # Grava a autenticação na sessão do navegador
             st.rerun()
         else:
             st.error("Senha incorreta!")
     st.stop()
 
+# Botão para Sair / Bloquear
 if st.sidebar.button("🔒 Sair / Bloquear App"):
     st.session_state.autenticado = False
+    st.query_params.clear()  # Limpa o parâmetro e exige a senha no próximo acesso
     st.rerun()
 
 # =========================================================
