@@ -149,7 +149,6 @@ supabase: Client = conectar_banco()
 # =========================================================
 # 5. SEGURANÇA E ACESSO
 # =========================================================
-# Busca a senha das configurações seguras (Secrets)
 try:
     SENHA_CAIXA = st.secrets["SENHA_CAIXA"]
 except Exception:
@@ -163,7 +162,7 @@ if st.query_params.get("auth") == "true":
 if "autenticado" not in st.session_state:
     st.session_state.autenticado = False
 
-# Tela de Login
+# TELA DE LOGIN
 if not st.session_state.autenticado:
     st.subheader("🔒 Acesso ao Sistema")
     senha_digitada = st.text_input("Digite a Senha para Entrar:", type="password")
@@ -171,17 +170,21 @@ if not st.session_state.autenticado:
     if st.button("ENTRAR NO CAIXA"):
         if senha_digitada == SENHA_CAIXA:
             st.session_state.autenticado = True
-            st.query_params["auth"] = "true"  # Grava a autenticação na sessão do navegador
+            st.query_params["auth"] = "true"  # Grava no navegador para não pedir senha a todo momento
             st.rerun()
         else:
             st.error("Senha incorreta!")
     st.stop()
 
-# Botão para Sair / Bloquear
-if st.sidebar.button("🔒 Sair / Bloquear App"):
-    st.session_state.autenticado = False
-    st.query_params.clear()  # Limpa o parâmetro e exige a senha no próximo acesso
-    st.rerun()
+# =========================================================
+# BOTÃO DE SAIR VISÍVEL NO TOPO DA TELA
+# =========================================================
+col_espaco, col_sair = st.columns([3, 1])
+with col_sair:
+    if st.button("🔒 Sair", key="btn_sair_topo"):
+        st.session_state.autenticado = False
+        st.query_params.clear()  # Limpa o parâmetro e exige a senha no próximo acesso
+        st.rerun()
 
 # =========================================================
 # 6. GERENCIAMENTO DE NAVEGAÇÃO
