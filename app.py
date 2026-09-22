@@ -24,7 +24,7 @@ st.set_page_config(
 )
 
 # =========================================================
-# 3. CABEÇALHO FIXO, PWA E CSS PARA MENU SEM BOLINHAS
+# 3. CABEÇALHO FIXO, PWA E CSS DO MENU INFERIOR
 # =========================================================
 st.markdown("""
     <head>
@@ -67,7 +67,7 @@ st.markdown("""
         font-size: 17px !important;
     }
 
-    /* Ajuste do container principal */
+    /* Ajuste do container principal para não cobrir o conteúdo */
     .main .block-container, [data-testid="stMainBlockContainer"] {
         padding-top: 65px !important;
         padding-left: 15px !important;
@@ -75,7 +75,7 @@ st.markdown("""
         padding-bottom: 110px !important;
     }
 
-    /* Botões do sistema */
+    /* Botões padrão do sistema */
     div.stButton > button {
         width: 100% !important;
         height: 3.4em !important;
@@ -85,9 +85,9 @@ st.markdown("""
     }
 
     /* =========================================================
-       ESTILO EXCLUSIVO DA BARRA INFERIOR (st.bottom)
+       ESTILO DA BARRA INFERIOR DE NAVEGAÇÃO (Sem depender de st.bottom)
        ========================================================= */
-    div[data-testid="stBottomBlockContainer"] {
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) {
         position: fixed !important;
         bottom: 0 !important;
         left: 0 !important;
@@ -95,19 +95,19 @@ st.markdown("""
         background-color: #ffffff !important;
         border-top: 2px solid #e2e8f0 !important;
         padding: 8px 10px 18px 10px !important;
-        z-index: 99999 !important;
-        box-shadow: 0px -4px 15px rgba(0, 0, 0, 0.1) !important;
+        z-index: 999999 !important;
+        box-shadow: 0px -4px 15px rgba(0, 0, 0, 0.12) !important;
     }
 
-    /* Oculta as bolinhas do radio button APENAS no rodapé */
-    div[data-testid="stBottomBlockContainer"] input[type="radio"],
-    div[data-testid="stBottomBlockContainer"] div[role="radio"] > div:first-child,
-    div[data-testid="stBottomBlockContainer"] label > div:first-child {
+    /* Oculta as bolinhas do radio button APENAS no menu de navegação */
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) input[type="radio"],
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radio"] > div:first-child,
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) label > div:first-child {
         display: none !important;
     }
 
-    /* Disposição dos botões em linha */
-    div[data-testid="stBottomBlockContainer"] div[role="radiogroup"] {
+    /* Disposição dos botões lado a lado */
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radiogroup"] {
         display: flex !important;
         flex-direction: row !important;
         justify-content: space-around !important;
@@ -115,8 +115,8 @@ st.markdown("""
     }
 
     /* Estilo padrão de cada botão da barra (Inativo) */
-    div[data-testid="stBottomBlockContainer"] label,
-    div[data-testid="stBottomBlockContainer"] div[role="radio"] {
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) label,
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radio"] {
         flex: 1 !important;
         text-align: center !important;
         justify-content: center !important;
@@ -132,17 +132,15 @@ st.markdown("""
     }
 
     /* Estilo do botão SELECIONADO (Ativo - Azul) */
-    div[data-testid="stBottomBlockContainer"] label:has(input:checked),
-    div[data-testid="stBottomBlockContainer"] div[role="radio"][aria-checked="true"],
-    div[data-testid="stBottomBlockContainer"] label[data-checked="true"] {
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) label:has(input:checked),
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radio"][aria-checked="true"] {
         background-color: #0284c7 !important;
         color: #ffffff !important;
         border-color: #0284c7 !important;
     }
 
-    /* Garante texto branco quando selecionado */
-    div[data-testid="stBottomBlockContainer"] label:has(input:checked) *,
-    div[data-testid="stBottomBlockContainer"] div[role="radio"][aria-checked="true"] * {
+    /* Texto branco para a aba ativa */
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) label:has(input:checked) * {
         color: #ffffff !important;
     }
     </style>
@@ -198,7 +196,7 @@ with col_sair:
         st.rerun()
 
 # =========================================================
-# 6. GERENCIAMENTO DE NAVEGAÇÃO
+# 6. GERENCIAMENTO DE NAVEGAÇÃO (ÚNICA INSTÂNCIA)
 # =========================================================
 OPCOES_NAVEGACAO = [
     "➕ Novo",
@@ -210,17 +208,16 @@ OPCOES_NAVEGACAO = [
 if "tela_ativa" not in st.session_state or st.session_state.tela_ativa not in OPCOES_NAVEGACAO:
     st.session_state.tela_ativa = OPCOES_NAVEGACAO[0]
 
-# Renderiza a barra inferior nativa do Streamlit
-with st.bottom():
-    tela = st.radio(
-        label="Navegação",
-        options=OPCOES_NAVEGACAO,
-        index=OPCOES_NAVEGACAO.index(st.session_state.tela_ativa),
-        horizontal=True,
-        label_visibility="collapsed",
-        key="barra_navegacao_unica"
-    )
-    st.session_state.tela_ativa = tela
+tela = st.radio(
+    label="Navegação",
+    options=OPCOES_NAVEGACAO,
+    index=OPCOES_NAVEGACAO.index(st.session_state.tela_ativa),
+    horizontal=True,
+    label_visibility="collapsed",
+    key="menu_navegacao_principal"
+)
+
+st.session_state.tela_ativa = tela
 
 # =========================================================
 # TELA 1: NOVO LANÇAMENTO
