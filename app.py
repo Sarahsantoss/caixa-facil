@@ -31,8 +31,8 @@ st.markdown("""
         <title>Caixa Fácil</title>
         <meta name="apple-mobile-web-app-title" content="Caixa Fácil">
         <meta name="application-name" content="Caixa Fácil">
-        <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/SEU-USUARIO/caixa-facil/main/icon.png">
-        <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/SEU-USUARIO/caixa-facil/main/icon.png">
+        <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Sarahsantoss/caixa-facil/main/icon.png">
+        <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Sarahsantoss/caixa-facil/main/icon.png">
     </head>
     
     <!-- CABEÇALHO FIXO NO TOPO DA TELA -->
@@ -137,8 +137,8 @@ st.markdown("""
 # 4. CONEXÃO COM O BANCO DE DADOS (Supabase)
 # =========================================================
 # Substitua com as suas credenciais sem barras no final do link
-SUPABASE_URL = "https://SEU-PROJETO.supabase.co"
-SUPABASE_KEY = "SUA-CHAVE-ANON-PUBLIC"
+SUPABASE_URL = "https://pasmbmpgxuirnhlpwojf.supabase.co"
+SUPABASE_KEY = "sb_publishable_XeiQp6uaRZ0Pby1B6QL_Kw_MMGu0AM2"
 
 @st.cache_resource
 def conectar_banco():
