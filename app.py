@@ -99,14 +99,7 @@ st.markdown("""
         box-shadow: 0px -4px 15px rgba(0, 0, 0, 0.12) !important;
     }
 
-    /* Oculta as bolinhas do radio button apenas no menu inferior */
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] input[type="radio"],
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] div[role="radio"] > div:first-child,
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] label > div:first-child {
-        display: none !important;
-    }
-
-    /* Disposição em linha horizontal */
+    /* Disposição em linha horizontal do grupo */
     div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] div[role="radiogroup"] {
         display: flex !important;
         flex-direction: row !important;
@@ -114,21 +107,32 @@ st.markdown("""
         gap: 6px !important;
     }
 
-    /* Botões inativos */
+    /* Estilo do botão inativo: dispor bolinha e texto em COLUNA (Bolinha em cima) */
     div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] label,
     div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] div[role="radio"] {
         flex: 1 !important;
-        text-align: center !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
         justify-content: center !important;
+        text-align: center !important;
         background-color: #f1f5f9 !important;
         color: #334155 !important;
-        padding: 10px 2px !important;
+        padding: 8px 2px !important;
         border-radius: 10px !important;
         font-weight: 600 !important;
         font-size: 13px !important;
         border: 1px solid #cbd5e1 !important;
         cursor: pointer !important;
         margin: 0 !important;
+    }
+
+    /* Posicionamento da bolinha no topo com espaçamento */
+    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] label > div:first-child,
+    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] div[role="radio"] > div:first-child {
+        display: flex !important;
+        margin-bottom: 4px !important;
+        margin-right: 0 !important;
     }
 
     /* Botão ativo (Azul) */
@@ -139,7 +143,7 @@ st.markdown("""
         border-color: #0284c7 !important;
     }
 
-    /* Texto branco no botão ativo */
+    /* Texto e ícone do botão ativo em branco */
     div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] label:has(input:checked) * {
         color: #ffffff !important;
     }
