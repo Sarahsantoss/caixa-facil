@@ -190,16 +190,71 @@ with col_sair:
 # 6. GERENCIAMENTO DE NAVEGAÇÃO
 # =========================================================
 OPCOES_NAVEGACAO = [
-    "➕ Novo", 
-    "📋 Lista", 
-    "📊 Fechamento", 
-    "📅 Mensal"
+    "➕ Novo",
+    "📋 Lista",
+    "📉 Fechamento",
+    "📊 Mensal"
 ]
 
-if "tela_ativa" not in st.session_state:
-    st.session_state.tela_ativa = "➕ Novo"
+# Estilo CSS que altera APENAS o menu de navegação (fora do formulário)
+st.markdown("""
+    <style>
+    /* Fixa o menu de navegação no rodapé */
+    div[data-testid="stRadio"]:not(form div[data-testid="stRadio"]) {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #ffffff;
+        padding: 8px 12px;
+        box-shadow: 0px -3px 12px rgba(0, 0, 0, 0.15);
+        z-index: 999999;
+    }
 
-tela = st.session_state.tela_ativa
+    /* Esconde as bolinhas apenas no menu de navegação */
+    div[data-testid="stRadio"]:not(form div[data-testid="stRadio"]) input[type="radio"],
+    div[data-testid="stRadio"]:not(form div[data-testid="stRadio"]) div[role="radio"] > div:first-child {
+        display: none !important;
+    }
+
+    /* Organiza os botões lado a lado */
+    div[data-testid="stRadio"]:not(form div[data-testid="stRadio"]) > div[role="radiogroup"] {
+        display: flex;
+        justify-content: space-around;
+        gap: 6px;
+        flex-direction: row !important;
+    }
+
+    /* Estilo visual dos botões da barra inferior */
+    div[data-testid="stRadio"]:not(form div[data-testid="stRadio"]) label {
+        flex: 1;
+        text-align: center;
+        background-color: #f1f3f5;
+        color: #333333;
+        padding: 10px 4px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        border: none;
+        margin: 0 !important;
+    }
+
+    /* Dá espaço no fundo para que o formulário não fique coberto pelo menu */
+    .main .block-container {
+        padding-bottom: 90px !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# Desenha a barra de navegação no rodapé com as suas opções
+tela = st.radio(
+    "Navegação",
+    options=OPCOES_NAVEGACAO,
+    horizontal=True,
+    label_visibility="collapsed",
+    key="menu_navegacao_principal"
+)
 
 # =========================================================
 # TELA 1: NOVO LANÇAMENTO
