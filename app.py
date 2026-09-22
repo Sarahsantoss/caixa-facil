@@ -6,7 +6,7 @@ from supabase import create_client, Client
 from PIL import Image
 
 # =========================================================
-# 1. CARREGAR ÍCONE DO APLICATIVO
+# 1. CARREGAR ÍCONE DA APLICAÇÃO
 # =========================================================
 try:
     icone_app = Image.open("icon.png")
@@ -14,7 +14,7 @@ except Exception:
     icone_app = "📱"
 
 # =========================================================
-# 2. CONFIGURAÇÃO DA PÁGINA E NOME DO APP
+# 2. CONFIGURAÇÃO DA PÁGINA E NOME DA APP
 # =========================================================
 st.set_page_config(
     page_title="Caixa Fácil",
@@ -35,7 +35,7 @@ st.markdown("""
         <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Sarahsantoss/caixa-facil/main/icon.png">
     </head>
     
-    <!-- CABEÇALHO FIXO NO TOPO DA TELA -->
+    <!-- CABEÇALHO FIXO NO TOPO DO ECRÃ -->
     <div style="
         position: fixed;
         top: 0;
@@ -67,7 +67,7 @@ st.markdown("""
         font-size: 17px !important;
     }
 
-    /* Ajuste do container principal para não cobrir o conteúdo */
+    /* Ajuste do container principal para não tapar o conteúdo */
     .main .block-container, [data-testid="stMainBlockContainer"] {
         padding-top: 65px !important;
         padding-left: 15px !important;
@@ -85,9 +85,9 @@ st.markdown("""
     }
 
     /* =========================================================
-       ESTILO DA BARRA INFERIOR DE NAVEGAÇÃO VIA MARCADOR HTML
+       ESTILO DA BARRA INFERIOR DE NAVEGAÇÃO
        ========================================================= */
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] {
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) {
         position: fixed !important;
         bottom: 0 !important;
         left: 0 !important;
@@ -99,30 +99,38 @@ st.markdown("""
         box-shadow: 0px -4px 15px rgba(0, 0, 0, 0.12) !important;
     }
 
-    /* Oculta as bolinhas do radio button apenas no menu inferior */
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] input[type="radio"],
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] div[role="radio"] > div:first-child,
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] label > div:first-child {
+    /* OCULTA TOTALMENTE AS BOLINHAS E ÍCONES DE SELEÇÃO NO MENU */
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) input[type="radio"],
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radio"] > div:first-child,
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radio"] > span:first-child,
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) label > div:first-child,
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) svg {
         display: none !important;
+        visibility: hidden !important;
+        width: 0px !important;
+        height: 0px !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
-    /* Disposição em linha horizontal */
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] div[role="radiogroup"] {
+    /* Disposição dos botões em linha horizontal */
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radiogroup"] {
         display: flex !important;
         flex-direction: row !important;
         justify-content: space-around !important;
         gap: 6px !important;
     }
 
-    /* Botões inativos */
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] label,
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] div[role="radio"] {
+    /* Estilo base dos botões (Inativo) */
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) label,
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radio"] {
         flex: 1 !important;
         text-align: center !important;
         justify-content: center !important;
+        align-items: center !important;
         background-color: #f1f5f9 !important;
         color: #334155 !important;
-        padding: 10px 2px !important;
+        padding: 12px 2px !important;
         border-radius: 10px !important;
         font-weight: 600 !important;
         font-size: 13px !important;
@@ -131,23 +139,24 @@ st.markdown("""
         margin: 0 !important;
     }
 
-    /* Botão ativo (Azul) */
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] label:has(input:checked),
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] div[role="radio"][aria-checked="true"] {
+    /* Estilo do botão selecionado (Ativo - Azul) */
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) label:has(input:checked),
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radio"][aria-checked="true"] {
         background-color: #0284c7 !important;
         color: #ffffff !important;
         border-color: #0284c7 !important;
     }
 
-    /* Texto branco no botão ativo */
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] label:has(input:checked) * {
+    /* Garante o texto em branco para a opção ativa */
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) label:has(input:checked) *,
+    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radio"][aria-checked="true"] * {
         color: #ffffff !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
 # =========================================================
-# 4. CONEXÃO COM O BANCO DE DADOS (Supabase)
+# 4. CONEXÃO COM A BASE DE DADOS (Supabase)
 # =========================================================
 SUPABASE_URL = "https://pasmbmpgxuirnhlpwojf.supabase.co"
 SUPABASE_KEY = "sb_publishable_XeiQp6uaRZ0Pby1B6QL_Kw_MMGu0AM2"
@@ -173,7 +182,7 @@ if st.query_params.get("auth") == "true":
 if "autenticado" not in st.session_state:
     st.session_state.autenticado = False
 
-# TELA DE LOGIN
+# ECRÃ DE LOGIN
 if not st.session_state.autenticado:
     st.subheader("🔒 Acesso ao Sistema")
     senha_digitada = st.text_input("Digite a Senha para Entrar:", type="password")
@@ -196,7 +205,7 @@ with col_sair:
         st.rerun()
 
 # =========================================================
-# 6. GERENCIAMENTO DE NAVEGAÇÃO
+# 6. GESTÃO DE NAVEGAÇÃO
 # =========================================================
 OPCOES_NAVEGACAO = [
     "➕ Novo",
@@ -207,9 +216,6 @@ OPCOES_NAVEGACAO = [
 
 if "tela_ativa" not in st.session_state or st.session_state.tela_ativa not in OPCOES_NAVEGACAO:
     st.session_state.tela_ativa = OPCOES_NAVEGACAO[0]
-
-# Marcador HTML para o CSS identificar a barra
-st.markdown('<div id="menu-inferior-marker"></div>', unsafe_allow_html=True)
 
 tela = st.radio(
     label="Navegação",
@@ -223,7 +229,7 @@ tela = st.radio(
 st.session_state.tela_ativa = tela
 
 # =========================================================
-# TELA 1: NOVO LANÇAMENTO
+# ECRÃ 1: NOVO REGISTO
 # =========================================================
 if tela == "➕ Novo":
     st.subheader("➕ Realizar Lançamento")
@@ -253,7 +259,7 @@ if tela == "➕ Novo":
             st.rerun()
 
 # =========================================================
-# TELA 2: LISTA DE LANÇAMENTOS
+# ECRÃ 2: LISTA DE REGISTOS
 # =========================================================
 elif tela == "📋 Lista":
     st.subheader("📋 Registros do Dia")
@@ -293,7 +299,7 @@ elif tela == "📋 Lista":
                     st.rerun()
 
 # =========================================================
-# TELA 3: FECHAMENTO DO DIA
+# ECRÃ 3: FECHO DO DIA
 # =========================================================
 elif tela == "📊 Fechamento":
     st.subheader("📊 Fechamento do Dia")
@@ -347,7 +353,7 @@ elif tela == "📊 Fechamento":
         st.info(f"Nenhum lançamento em {data_fmt_fech}.")
 
 # =========================================================
-# TELA 4: DEMONSTRATIVO MENSAL
+# ECRÃ 4: DEMONSTRATIVO MENSAL
 # =========================================================
 elif tela == "📅 Mensal":
     st.subheader("📅 Demonstrativo Mensal")
