@@ -85,9 +85,9 @@ st.markdown("""
     }
 
     /* =========================================================
-       ESTILO DA BARRA INFERIOR DE NAVEGAÇÃO (Sem depender de st.bottom)
+       ESTILO DA BARRA INFERIOR DE NAVEGAÇÃO VIA MARCADOR HTML
        ========================================================= */
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) {
+    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] {
         position: fixed !important;
         bottom: 0 !important;
         left: 0 !important;
@@ -99,24 +99,24 @@ st.markdown("""
         box-shadow: 0px -4px 15px rgba(0, 0, 0, 0.12) !important;
     }
 
-    /* Oculta as bolinhas do radio button APENAS no menu de navegação */
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) input[type="radio"],
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radio"] > div:first-child,
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) label > div:first-child {
+    /* Oculta as bolinhas do radio button apenas no menu inferior */
+    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] input[type="radio"],
+    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] div[role="radio"] > div:first-child,
+    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] label > div:first-child {
         display: none !important;
     }
 
-    /* Disposição dos botões lado a lado */
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radiogroup"] {
+    /* Disposição em linha horizontal */
+    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] div[role="radiogroup"] {
         display: flex !important;
         flex-direction: row !important;
         justify-content: space-around !important;
         gap: 6px !important;
     }
 
-    /* Estilo padrão de cada botão da barra (Inativo) */
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) label,
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radio"] {
+    /* Botões inativos */
+    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] label,
+    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] div[role="radio"] {
         flex: 1 !important;
         text-align: center !important;
         justify-content: center !important;
@@ -131,16 +131,16 @@ st.markdown("""
         margin: 0 !important;
     }
 
-    /* Estilo do botão SELECIONADO (Ativo - Azul) */
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) label:has(input:checked),
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) div[role="radio"][aria-checked="true"] {
+    /* Botão ativo (Azul) */
+    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] label:has(input:checked),
+    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] div[role="radio"][aria-checked="true"] {
         background-color: #0284c7 !important;
         color: #ffffff !important;
         border-color: #0284c7 !important;
     }
 
-    /* Texto branco para a aba ativa */
-    div[data-testid="stRadio"]:has(input[value="➕ Novo"]) label:has(input:checked) * {
+    /* Texto branco no botão ativo */
+    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] label:has(input:checked) * {
         color: #ffffff !important;
     }
     </style>
@@ -196,7 +196,7 @@ with col_sair:
         st.rerun()
 
 # =========================================================
-# 6. GERENCIAMENTO DE NAVEGAÇÃO (ÚNICA INSTÂNCIA)
+# 6. GERENCIAMENTO DE NAVEGAÇÃO
 # =========================================================
 OPCOES_NAVEGACAO = [
     "➕ Novo",
@@ -207,6 +207,9 @@ OPCOES_NAVEGACAO = [
 
 if "tela_ativa" not in st.session_state or st.session_state.tela_ativa not in OPCOES_NAVEGACAO:
     st.session_state.tela_ativa = OPCOES_NAVEGACAO[0]
+
+# Marcador HTML para o CSS identificar a barra
+st.markdown('<div id="menu-inferior-marker"></div>', unsafe_allow_html=True)
 
 tela = st.radio(
     label="Navegação",
