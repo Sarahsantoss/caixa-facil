@@ -24,7 +24,7 @@ st.set_page_config(
 )
 
 # =========================================================
-# 3. CABEÇALHO FIXO, PWA E ESTILO CSS OTIMIZADO PARA CELULAR
+# 3. CABEÇALHO FIXO, PWA E CSS PARA MENU SEM BOLINHAS
 # =========================================================
 st.markdown("""
     <head>
@@ -72,18 +72,10 @@ st.markdown("""
         padding-top: 65px !important;
         padding-left: 15px !important;
         padding-right: 15px !important;
+        padding-bottom: 110px !important;
     }
 
-    /* CRUCIAL: CRIA UM BLOCO INVISÍVEL AO FINAL DO CONTEÚDO FORÇANDO A ROLAGEM PASSAR DO MENU FIXO */
-    .main .block-container::after, 
-    [data-testid="stMainBlockContainer"]::after {
-        content: "";
-        display: block;
-        height: 150px !important;
-        width: 100%;
-    }
-
-    /* Botões grandes e fáceis de tocar com o polegar */
+    /* Botões do sistema */
     div.stButton > button {
         width: 100% !important;
         height: 3.4em !important;
@@ -92,7 +84,9 @@ st.markdown("""
         border-radius: 12px !important;
     }
 
-    /* BARRA FIXA DE NAVEGAÇÃO NO RODAPÉ */
+    /* =========================================================
+       ESTILO EXCLUSIVO DA BARRA INFERIOR (st.bottom)
+       ========================================================= */
     div[data-testid="stBottomBlockContainer"] {
         position: fixed !important;
         bottom: 0 !important;
@@ -100,35 +94,56 @@ st.markdown("""
         right: 0 !important;
         background-color: #ffffff !important;
         border-top: 2px solid #e2e8f0 !important;
-        padding: 8px 6px 20px 6px !important;
+        padding: 8px 10px 18px 10px !important;
         z-index: 99999 !important;
-        box-shadow: 0px -4px 12px rgba(0, 0, 0, 0.08);
+        box-shadow: 0px -4px 15px rgba(0, 0, 0, 0.1) !important;
     }
 
-    /* Estilização dos itens da navegação */
+    /* Oculta as bolinhas do radio button APENAS no rodapé */
+    div[data-testid="stBottomBlockContainer"] input[type="radio"],
+    div[data-testid="stBottomBlockContainer"] div[role="radio"] > div:first-child,
+    div[data-testid="stBottomBlockContainer"] label > div:first-child {
+        display: none !important;
+    }
+
+    /* Disposição dos botões em linha */
     div[data-testid="stBottomBlockContainer"] div[role="radiogroup"] {
         display: flex !important;
+        flex-direction: row !important;
         justify-content: space-around !important;
-        gap: 4px !important;
-    }
-    
-    div[data-testid="stBottomBlockContainer"] label {
-        flex: 1 !important;
-        background-color: #f1f5f9 !important;
-        border: 1px solid #cbd5e1 !important;
-        border-radius: 10px !important;
-        padding: 10px 2px !important;
-        text-align: center !important;
-        font-size: 13px !important;
-        font-weight: bold !important;
-        color: #334155 !important;
+        gap: 6px !important;
     }
 
-    /* Botão selecionado na barra inferior */
+    /* Estilo padrão de cada botão da barra (Inativo) */
+    div[data-testid="stBottomBlockContainer"] label,
+    div[data-testid="stBottomBlockContainer"] div[role="radio"] {
+        flex: 1 !important;
+        text-align: center !important;
+        justify-content: center !important;
+        background-color: #f1f5f9 !important;
+        color: #334155 !important;
+        padding: 10px 2px !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        font-size: 13px !important;
+        border: 1px solid #cbd5e1 !important;
+        cursor: pointer !important;
+        margin: 0 !important;
+    }
+
+    /* Estilo do botão SELECIONADO (Ativo - Azul) */
+    div[data-testid="stBottomBlockContainer"] label:has(input:checked),
+    div[data-testid="stBottomBlockContainer"] div[role="radio"][aria-checked="true"],
     div[data-testid="stBottomBlockContainer"] label[data-checked="true"] {
         background-color: #0284c7 !important;
         color: #ffffff !important;
         border-color: #0284c7 !important;
+    }
+
+    /* Garante texto branco quando selecionado */
+    div[data-testid="stBottomBlockContainer"] label:has(input:checked) *,
+    div[data-testid="stBottomBlockContainer"] div[role="radio"][aria-checked="true"] * {
+        color: #ffffff !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -136,7 +151,6 @@ st.markdown("""
 # =========================================================
 # 4. CONEXÃO COM O BANCO DE DADOS (Supabase)
 # =========================================================
-# Substitua com as suas credenciais sem barras no final do link
 SUPABASE_URL = "https://pasmbmpgxuirnhlpwojf.supabase.co"
 SUPABASE_KEY = "sb_publishable_XeiQp6uaRZ0Pby1B6QL_Kw_MMGu0AM2"
 
@@ -155,7 +169,6 @@ except Exception:
     st.error("⚠️ Erro de segurança: Chave 'SENHA_CAIXA' não encontrada nos Secrets do Streamlit.")
     st.stop()
 
-# Reativa o login automaticamente se já existir o parâmetro na URL
 if st.query_params.get("auth") == "true":
     st.session_state.autenticado = True
 
@@ -170,115 +183,44 @@ if not st.session_state.autenticado:
     if st.button("ENTRAR NO CAIXA"):
         if senha_digitada == SENHA_CAIXA:
             st.session_state.autenticado = True
-            st.query_params["auth"] = "true"  # Grava no navegador para não pedir senha a todo momento
+            st.query_params["auth"] = "true"
             st.rerun()
         else:
             st.error("Senha incorreta!")
     st.stop()
 
-# =========================================================
-# BOTÃO DE SAIR VISÍVEL NO TOPO DA TELA
-# =========================================================
+# BOTÃO DE SAIR NO TOPO
 col_espaco, col_sair = st.columns([3, 1])
 with col_sair:
     if st.button("🔒 Sair", key="btn_sair_topo"):
         st.session_state.autenticado = False
-        st.query_params.clear()  # Limpa o parâmetro e exige a senha no próximo acesso
+        st.query_params.clear()
         st.rerun()
 
 # =========================================================
 # 6. GERENCIAMENTO DE NAVEGAÇÃO
 # =========================================================
 OPCOES_NAVEGACAO = [
-    "+ Novo",
+    "➕ Novo",
     "📋 Lista",
-    "📉 Fechamento",
-    "📊 Mensal"
+    "📊 Fechamento",
+    "📅 Mensal"
 ]
 
-# Validação e recuperação do estado da sessão
 if "tela_ativa" not in st.session_state or st.session_state.tela_ativa not in OPCOES_NAVEGACAO:
     st.session_state.tela_ativa = OPCOES_NAVEGACAO[0]
 
-indice_atual = OPCOES_NAVEGACAO.index(st.session_state.tela_ativa)
-
-# CSS direcionado APENAS para o menu de navegação
-st.markdown("""
-    <style>
-    /* Fixa APENAS a barra de navegação no rodapé */
-    div[data-testid="stRadio"]:has(input[value="+ Novo"]),
-    div[data-testid="stRadio"]:has(input[value="📋 Lista"]) {
-        position: fixed !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        background-color: #ffffff !important;
-        padding: 8px 10px !important;
-        box-shadow: 0px -4px 15px rgba(0, 0, 0, 0.15) !important;
-        z-index: 999999 !important;
-    }
-
-    /* Oculta as bolinhas APENAS no menu de navegação */
-    div[data-testid="stRadio"]:has(input[value="+ Novo"]) input[type="radio"],
-    div[data-testid="stRadio"]:has(input[value="+ Novo"]) div[role="radio"] > div:first-child,
-    div[data-testid="stRadio"]:has(input[value="📋 Lista"]) input[type="radio"],
-    div[data-testid="stRadio"]:has(input[value="📋 Lista"]) div[role="radio"] > div:first-child {
-        display: none !important;
-    }
-
-    /* Organiza os botões lado a lado APENAS no menu */
-    div[data-testid="stRadio"]:has(input[value="+ Novo"]) > div[role="radiogroup"],
-    div[data-testid="stRadio"]:has(input[value="📋 Lista"]) > div[role="radiogroup"] {
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: space-between !important;
-        gap: 6px !important;
-    }
-
-    /* Estilo dos botões inativos do menu */
-    div[data-testid="stRadio"]:has(input[value="+ Novo"]) label,
-    div[data-testid="stRadio"]:has(input[value="📋 Lista"]) label {
-        flex: 1 !important;
-        text-align: center !important;
-        background-color: #f0f2f6 !important;
-        color: #333333 !important;
-        padding: 10px 2px !important;
-        border-radius: 10px !important;
-        font-weight: 500 !important;
-        font-size: 13px !important;
-        cursor: pointer !important;
-        border: 1px solid #d0d4dc !important;
-        margin: 0 !important;
-    }
-
-    /* Estilo do botão selecionado (Azul) */
-    div[data-testid="stRadio"]:has(input[value="+ Novo"]) label:has(input:checked),
-    div[data-testid="stRadio"]:has(input[value="📋 Lista"]) label:has(input:checked) {
-        background-color: #0066cc !important;
-        color: #ffffff !important;
-        font-weight: bold !important;
-        border-color: #0066cc !important;
-    }
-
-    /* Espaço na parte inferior para o conteúdo não ficar tapado */
-    .main .block-container {
-        padding-bottom: 95px !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-# Desenha o menu no rodapé
-tela = st.radio(
-    "Navegação",
-    options=OPCOES_NAVEGACAO,
-    index=indice_atual,
-    horizontal=True,
-    label_visibility="collapsed",
-    key="menu_navegacao_principal"
-)
-
-# Atualiza a aba ativa
-st.session_state.tela_ativa = tela
+# Renderiza a barra inferior nativa do Streamlit
+with st.bottom():
+    tela = st.radio(
+        label="Navegação",
+        options=OPCOES_NAVEGACAO,
+        index=OPCOES_NAVEGACAO.index(st.session_state.tela_ativa),
+        horizontal=True,
+        label_visibility="collapsed",
+        key="barra_navegacao_unica"
+    )
+    st.session_state.tela_ativa = tela
 
 # =========================================================
 # TELA 1: NOVO LANÇAMENTO
@@ -460,20 +402,3 @@ elif tela == "📅 Mensal":
         st.dataframe(df_resumo_dias[['Data', 'Vendas (R$)', 'Gastos (R$)', 'Saldo (R$)']], use_container_width=True)
     else:
         st.info(f"Nenhum lançamento em {mes_selecionado} de {ano_selecionado}.")
-
-# =========================================================
-# BARRA FIXA DE NAVEGAÇÃO INFERIOR
-# =========================================================
-with st.bottom:
-    escolha_inferior = st.radio(
-        label="Navegação",
-        options=OPCOES_NAVEGACAO,
-        index=OPCOES_NAVEGACAO.index(st.session_state.tela_ativa),
-        horizontal=True,
-        label_visibility="collapsed",
-        key="barra_navegacao_bottom"
-    )
-    
-    if escolha_inferior != st.session_state.tela_ativa:
-        st.session_state.tela_ativa = escolha_inferior
-        st.rerun()
