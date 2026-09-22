@@ -18,21 +18,21 @@ except Exception:
 # =========================================================
 st.set_page_config(
     page_title="Caixa Fácil",
-    page_icon="https://raw.githubusercontent.com/Sarahsantoss/caixa-facil/main/icon.png",
-    layout="wide",
+    page_icon=icone_app,
+    layout="centered",
     initial_sidebar_state="collapsed"
 )
 
 # =========================================================
-# 3. CABEÇALHO FIXO, PWA E CSS DO MENU INFERIOR
+# 3. CABEÇALHO FIXO, PWA E ESTILO CSS OTIMIZADO PARA CELULAR
 # =========================================================
 st.markdown("""
     <head>
         <title>Caixa Fácil</title>
         <meta name="apple-mobile-web-app-title" content="Caixa Fácil">
         <meta name="application-name" content="Caixa Fácil">
-        <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Sarahsantoss/caixa-facil/main/icon.png">
-        <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Sarahsantoss/caixa-facil/main/icon.png">
+        <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/SEU-USUARIO/caixa-facil/main/icon.png">
+        <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/SEU-USUARIO/caixa-facil/main/icon.png">
     </head>
     
     <!-- CABEÇALHO FIXO NO TOPO DA TELA -->
@@ -67,15 +67,23 @@ st.markdown("""
         font-size: 17px !important;
     }
 
-    /* Ajuste do container principal para não cobrir o conteúdo */
+    /* Ajuste do container principal */
     .main .block-container, [data-testid="stMainBlockContainer"] {
         padding-top: 65px !important;
         padding-left: 15px !important;
         padding-right: 15px !important;
-        padding-bottom: 110px !important;
     }
 
-    /* Botões padrão do sistema */
+    /* CRUCIAL: CRIA UM BLOCO INVISÍVEL AO FINAL DO CONTEÚDO FORÇANDO A ROLAGEM PASSAR DO MENU FIXO */
+    .main .block-container::after, 
+    [data-testid="stMainBlockContainer"]::after {
+        content: "";
+        display: block;
+        height: 150px !important;
+        width: 100%;
+    }
+
+    /* Botões grandes e fáceis de tocar com o polegar */
     div.stButton > button {
         width: 100% !important;
         height: 3.4em !important;
@@ -84,68 +92,43 @@ st.markdown("""
         border-radius: 12px !important;
     }
 
-    /* =========================================================
-       ESTILO DA BARRA INFERIOR DE NAVEGAÇÃO VIA MARCADOR HTML
-       ========================================================= */
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] {
+    /* BARRA FIXA DE NAVEGAÇÃO NO RODAPÉ */
+    div[data-testid="stBottomBlockContainer"] {
         position: fixed !important;
         bottom: 0 !important;
         left: 0 !important;
         right: 0 !important;
         background-color: #ffffff !important;
         border-top: 2px solid #e2e8f0 !important;
-        padding: 8px 10px 18px 10px !important;
-        z-index: 999999 !important;
-        box-shadow: 0px -4px 15px rgba(0, 0, 0, 0.12) !important;
+        padding: 8px 6px 20px 6px !important;
+        z-index: 99999 !important;
+        box-shadow: 0px -4px 12px rgba(0, 0, 0, 0.08);
     }
 
-    /* Disposição em linha horizontal do grupo */
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] div[role="radiogroup"] {
+    /* Estilização dos itens da navegação */
+    div[data-testid="stBottomBlockContainer"] div[role="radiogroup"] {
         display: flex !important;
-        flex-direction: row !important;
         justify-content: space-around !important;
-        gap: 6px !important;
+        gap: 4px !important;
     }
-
-    /* Estilo do botão inativo: dispor bolinha e texto em COLUNA (Bolinha em cima) */
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] label,
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] div[role="radio"] {
+    
+    div[data-testid="stBottomBlockContainer"] label {
         flex: 1 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        text-align: center !important;
         background-color: #f1f5f9 !important;
-        color: #334155 !important;
-        padding: 8px 2px !important;
-        border-radius: 10px !important;
-        font-weight: 600 !important;
-        font-size: 13px !important;
         border: 1px solid #cbd5e1 !important;
-        cursor: pointer !important;
-        margin: 0 !important;
+        border-radius: 10px !important;
+        padding: 10px 2px !important;
+        text-align: center !important;
+        font-size: 13px !important;
+        font-weight: bold !important;
+        color: #334155 !important;
     }
 
-    /* Posicionamento da bolinha no topo com espaçamento */
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] label > div:first-child,
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] div[role="radio"] > div:first-child {
-        display: flex !important;
-        margin-bottom: 4px !important;
-        margin-right: 0 !important;
-    }
-
-    /* Botão ativo (Azul) */
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] label:has(input:checked),
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] div[role="radio"][aria-checked="true"] {
+    /* Botão selecionado na barra inferior */
+    div[data-testid="stBottomBlockContainer"] label[data-checked="true"] {
         background-color: #0284c7 !important;
         color: #ffffff !important;
         border-color: #0284c7 !important;
-    }
-
-    /* Texto e ícone do botão ativo em branco */
-    div[data-testid="stElementContainer"]:has(#menu-inferior-marker) + div[data-testid="stElementContainer"] label:has(input:checked) * {
-        color: #ffffff !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -153,8 +136,9 @@ st.markdown("""
 # =========================================================
 # 4. CONEXÃO COM O BANCO DE DADOS (Supabase)
 # =========================================================
-SUPABASE_URL = "https://pasmbmpgxuirnhlpwojf.supabase.co"
-SUPABASE_KEY = "sb_publishable_XeiQp6uaRZ0Pby1B6QL_Kw_MMGu0AM2"
+# Substitua com as suas credenciais sem barras no final do link
+SUPABASE_URL = "https://SEU-PROJETO.supabase.co"
+SUPABASE_KEY = "SUA-CHAVE-ANON-PUBLIC"
 
 @st.cache_resource
 def conectar_banco():
@@ -171,6 +155,7 @@ except Exception:
     st.error("⚠️ Erro de segurança: Chave 'SENHA_CAIXA' não encontrada nos Secrets do Streamlit.")
     st.stop()
 
+# Reativa o login automaticamente se já existir o parâmetro na URL
 if st.query_params.get("auth") == "true":
     st.session_state.autenticado = True
 
@@ -185,46 +170,36 @@ if not st.session_state.autenticado:
     if st.button("ENTRAR NO CAIXA"):
         if senha_digitada == SENHA_CAIXA:
             st.session_state.autenticado = True
-            st.query_params["auth"] = "true"
+            st.query_params["auth"] = "true"  # Grava no navegador para não pedir senha a todo momento
             st.rerun()
         else:
             st.error("Senha incorreta!")
     st.stop()
 
-# BOTÃO DE SAIR NO TOPO
+# =========================================================
+# BOTÃO DE SAIR VISÍVEL NO TOPO DA TELA
+# =========================================================
 col_espaco, col_sair = st.columns([3, 1])
 with col_sair:
     if st.button("🔒 Sair", key="btn_sair_topo"):
         st.session_state.autenticado = False
-        st.query_params.clear()
+        st.query_params.clear()  # Limpa o parâmetro e exige a senha no próximo acesso
         st.rerun()
 
 # =========================================================
 # 6. GERENCIAMENTO DE NAVEGAÇÃO
 # =========================================================
 OPCOES_NAVEGACAO = [
-    "➕ Novo",
-    "📋 Lista",
-    "📊 Fechamento",
+    "➕ Novo", 
+    "📋 Lista", 
+    "📊 Fechamento", 
     "📅 Mensal"
 ]
 
-if "tela_ativa" not in st.session_state or st.session_state.tela_ativa not in OPCOES_NAVEGACAO:
-    st.session_state.tela_ativa = OPCOES_NAVEGACAO[0]
+if "tela_ativa" not in st.session_state:
+    st.session_state.tela_ativa = "➕ Novo"
 
-# Marcador HTML para o CSS identificar a barra
-st.markdown('<div id="menu-inferior-marker"></div>', unsafe_allow_html=True)
-
-tela = st.radio(
-    label="Navegação",
-    options=OPCOES_NAVEGACAO,
-    index=OPCOES_NAVEGACAO.index(st.session_state.tela_ativa),
-    horizontal=True,
-    label_visibility="collapsed",
-    key="menu_navegacao_principal"
-)
-
-st.session_state.tela_ativa = tela
+tela = st.session_state.tela_ativa
 
 # =========================================================
 # TELA 1: NOVO LANÇAMENTO
@@ -406,3 +381,20 @@ elif tela == "📅 Mensal":
         st.dataframe(df_resumo_dias[['Data', 'Vendas (R$)', 'Gastos (R$)', 'Saldo (R$)']], use_container_width=True)
     else:
         st.info(f"Nenhum lançamento em {mes_selecionado} de {ano_selecionado}.")
+
+# =========================================================
+# BARRA FIXA DE NAVEGAÇÃO INFERIOR
+# =========================================================
+with st.bottom:
+    escolha_inferior = st.radio(
+        label="Navegação",
+        options=OPCOES_NAVEGACAO,
+        index=OPCOES_NAVEGACAO.index(st.session_state.tela_ativa),
+        horizontal=True,
+        label_visibility="collapsed",
+        key="barra_navegacao_bottom"
+    )
+    
+    if escolha_inferior != st.session_state.tela_ativa:
+        st.session_state.tela_ativa = escolha_inferior
+        st.rerun()
